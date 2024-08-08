@@ -4,7 +4,7 @@ import Link from "next/link"
 import { FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
-import { authenticateUser } from "@/lib/actions/user.actions"
+import { authenticateUser, UserData } from "@/lib/actions/auth.actions"
 
 export default function SignIn() {
   const router = useRouter()
@@ -19,12 +19,13 @@ export default function SignIn() {
     event.preventDefault()
     const form = event.target as HTMLFormElement
     const { email, password } = getFormEntries(form)
-    const response = JSON.parse(await authenticateUser(email.toString(), password.toString()))
-    if (!response.success) {
-      toast.error(response.message)
-    } else {
-      toast.success(response.message)
+    const userData = await authenticateUser(email.toString(), password.toString())
+    if (userData) {
+      toast.success("Signed in successfully!")
+      localStorage.setItem("userData", JSON.stringify(userData))
       router.push("/")
+    } else {
+      toast.error("Something went wrong. Please try again later.")
     }
   }
 

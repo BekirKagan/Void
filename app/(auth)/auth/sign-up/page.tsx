@@ -4,7 +4,7 @@ import Link from "next/link"
 import { FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
-import { createUser } from "@/lib/actions/user.actions"
+import { createUser, UserData } from "@/lib/actions/auth.actions"
 
 export default function SignUp() {
   const router = useRouter()
@@ -19,12 +19,13 @@ export default function SignUp() {
     event.preventDefault()
     const form = event.target as HTMLFormElement
     const { username, email, password } = getFormEntries(form)
-    const response = JSON.parse(await createUser(username.toString(), email.toString(), password.toString()))
-    if (!response.success) {
-      toast.error(response.message)
-    } else {
-      toast.success(response.message)
+    const userData = await createUser(username.toString(), email.toString(), password.toString())
+    if (userData) {
+      toast.success("Account created successfully!")
+      localStorage.setItem("userData", JSON.stringify(userData))
       router.push("/")
+    } else {
+      toast.error("Something went wrong. Please try again later.")
     }
   }
 

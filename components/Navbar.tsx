@@ -1,10 +1,30 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { signOutUser, UserData } from "@/lib/actions/auth.actions"
 
 export default function Navbar() {
+  const router = useRouter()
   const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false)
+  const [userData, setUserData] = useState<UserData>()
+
+  useEffect(() => {
+    const dataJSON = localStorage.getItem("userData")
+    if (!dataJSON) {
+      return router.push("/auth/sign-in")
+    } else {
+      const data: UserData = JSON.parse(dataJSON)
+      setUserData(data)
+    }
+  }, [])
+
+  async function handleSignOut() {
+    await signOutUser()
+    localStorage.clear()
+    return router.push("/auth/sign-in")
+  }
 
   function toggleProfileMenu() {
     setShowProfileMenu(showProfileMenu => !showProfileMenu)
@@ -17,9 +37,9 @@ export default function Navbar() {
 
     return (
       <div className="absolute top-14 right-2 w-40 flex flex-col items-center p-2 space-y-2 bg-neutral-700">
-        <Link className="w-36 h-8 bg-neutral-500 flex justify-center items-center" href="/profile" onClick={toggleProfileMenu}>username</Link>
-        <button className="w-36 h-8 bg-neutral-500">Sign Out</button>
-      </div>
+        <Link className="w-36 h-8 bg-neutral-500 flex justify-center items-center" href="/profile" onClick={toggleProfileMenu}>{userData?.username}</Link>
+        <button className="w-36 h-8 bg-neutral-500" onClick={handleSignOut}>Sign Out</button>
+      </div >
     )
   }
 
