@@ -46,12 +46,19 @@ export default function Navbar() {
   return (
     <>
       <nav className="w-full h-12 flex justify-center items-center bg-neutral-900">
-        <Link className="absolute left-2 text-2xl font-bold" href="/">VOID</Link>
-        <input className="w-60 md:w-96 h-7 rounded-md bg-neutral-700 text-center text-sm outline-none placeholder:text-neutral-400" type="text" placeholder="Search"></input>
-        <button className="hidden md:flex absolute right-2" onClick={toggleProfileMenu}>
-          <img className="w-8 h-8 rounded-full object-cover" src="profile_photo.jpg" alt=""></img>
-        </button>
-        {profileMenu()}
+        <div className="flex-1 flex h-full items-center">
+          <Link className="p-2 text-2xl font-bold" href="/">VOID</Link>
+        </div>
+        <div className="flex-1 flex h-full justify-center items-center">
+          <input className="w-full h-7 rounded-md bg-neutral-700 text-center text-sm outline-none placeholder:text-neutral-400" type="text" placeholder="Search"></input>
+        </div>
+        <div className="flex-1 flex flex-row-reverse h-full items-center gap-1">
+          <button className="hidden md:flex p-2" onClick={toggleProfileMenu}>
+            <img className="w-8 h-8 rounded-full object-cover" src="profile_photo.jpg" alt=""></img>
+          </button>
+          <Link className="hidden md:flex p-1 text-sm bg-blue-chill-500" href="/upload">Upload</Link>
+          {profileMenu()}
+        </div>
       </nav>
     </>
   )
