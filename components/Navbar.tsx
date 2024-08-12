@@ -54,7 +54,7 @@ export default function Navbar() {
         </div>
         <div className="flex-1 flex flex-row-reverse h-full items-center gap-1">
           <button className="hidden md:flex p-2" onClick={toggleProfileMenu}>
-            <img className="w-8 h-8 rounded-full object-cover" src="profile_photo.jpg" alt=""></img>
+            <img className="w-8 h-8 rounded-full object-cover" src={userData?.photo} alt=""></img>
           </button>
           <Link className="hidden md:flex p-1 text-sm bg-blue-chill-500" href="/upload">Upload</Link>
           {profileMenu()}

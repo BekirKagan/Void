@@ -9,7 +9,9 @@ const USERS_COLLECTION = "users"
 export type UserData = {
   id: string,
   username: string,
-  email: string
+  email: string,
+  bio: string,
+  photo: string
 }
 
 export async function createUser(username: string, email: string, password: string): Promise<UserData | null> {
@@ -19,7 +21,9 @@ export async function createUser(username: string, email: string, password: stri
     const userData: UserData = {
       id: credential.user.uid,
       username: username,
-      email: credential.user.email as string
+      email: credential.user.email as string,
+      bio: "I am a STAR in the VOID!",
+      photo: "/default_profile_photo.svg"
     }
     await setDoc(doc(firebaseDB, USERS_COLLECTION, credential.user.uid), userData)
     return userData
