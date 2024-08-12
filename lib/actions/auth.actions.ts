@@ -2,7 +2,7 @@
 
 import { firebaseApp, firebaseDB } from "@/lib/firebase"
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, Auth, UserCredential } from "firebase/auth"
-import { doc, setDoc, getDoc } from "firebase/firestore"
+import { doc, setDoc, getDoc, updateDoc, DocumentReference } from "firebase/firestore"
 
 const USERS_COLLECTION = "users"
 
@@ -28,7 +28,7 @@ export async function createUser(username: string, email: string, password: stri
     await setDoc(doc(firebaseDB, USERS_COLLECTION, credential.user.uid), userData)
     return userData
   } catch (error: any) {
-    console.error("[ERROR ", error.code, "]: ", error.message)
+    logError(error)
     return null
   }
 }
@@ -45,8 +45,19 @@ export async function authenticateUser(email: string, password: string): Promise
       return null
     }
   } catch (error: any) {
-    console.error("[ERROR ", error.code, "]: ", error.message)
+    logError(error)
     return null
+  }
+}
+
+export async function updateUser(userData: UserData): Promise<boolean> {
+  try {
+    const reference: DocumentReference = doc(firebaseDB, USERS_COLLECTION, userData.id)
+    await updateDoc(reference, userData)
+    return true
+  } catch (error: any) {
+    logError(error)
+    return false
   }
 }
 
@@ -57,5 +68,9 @@ export async function signOutUser(): Promise<void> {
   } catch (error: any) {
     console.error("[ERROR ", error.code, "]: ", error.message)
   }
+}
+
+function logError(error: any): void {
+  console.error("[ERROR ", error.code, "]: ", error.message)
 }
 

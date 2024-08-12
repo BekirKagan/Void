@@ -18,6 +18,7 @@ export default function MobileNavBar() {
       setUserData(data)
     }
   }, [])
+
   return (
     <div className="absolute bottom-0 md:hidden w-full h-16 flex bg-neutral-900 border-t-2 border-blue-chill-500">
       <Link className="flex-1 flex justify-center items-center" href="/">Home</Link>
