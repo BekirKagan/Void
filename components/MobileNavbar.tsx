@@ -3,21 +3,29 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { UserData } from "@/lib/actions/auth.actions"
+import { getUser, UserData } from "@/lib/actions/auth.actions"
 
 export default function MobileNavBar() {
   const router = useRouter()
   const [userData, setUserData] = useState<UserData>()
 
   useEffect(() => {
-    const dataJSON = localStorage.getItem("userData")
-    if (!dataJSON) {
+    getUserData()
+  }, [])
+
+  async function getUserData() {
+    const userID = localStorage.getItem("userID")
+    if (!userID) {
       return router.push("/auth/sign-in")
     } else {
-      const data: UserData = JSON.parse(dataJSON)
-      setUserData(data)
+      const userData = await getUser(userID)
+      if (!userData) {
+        return router.push("/auth/sign-in")
+      } else {
+        setUserData(userData)
+      }
     }
-  }, [])
+  }
 
   return (
     <div className="absolute bottom-0 md:hidden w-full h-16 flex bg-neutral-900 border-t-2 border-blue-chill-500">

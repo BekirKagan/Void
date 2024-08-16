@@ -1,34 +1,29 @@
 "use client"
 
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { updateUser, UserData } from "@/lib/actions/auth.actions"
+import { getUser, UserData } from "@/lib/actions/auth.actions"
 
 export default function Profile() {
   const router = useRouter()
   const [userData, setUserData] = useState<UserData>()
 
   useEffect(() => {
-    const dataJSON = localStorage.getItem("userData")
-    if (!dataJSON) {
-      return router.push("/auth/sign-in")
-    } else {
-      const data: UserData = JSON.parse(dataJSON)
-      setUserData(data)
-    }
+    getUserData()
   }, [])
 
-  // TODO: Values should be coming from the user.
-  async function handleEdit() {
-    if (userData) {
-      const newUserData: UserData = userData
-      newUserData.bio = "I am a STAR in the VOID!"
-      newUserData.photo = "/default_profile_photo.svg"
-      const success = await updateUser(newUserData)
-      if (success) {
-        localStorage.setItem("userData", JSON.stringify(newUserData))
+  async function getUserData() {
+    const userID = localStorage.getItem("userID")
+    if (!userID) {
+      return router.push("/auth/sign-in")
+    } else {
+      const userData = await getUser(userID)
+      if (!userData) {
+        return router.push("/auth/sign-in")
+      } else {
+        setUserData(userData)
       }
-      return router.refresh()
     }
   }
 
@@ -40,7 +35,7 @@ export default function Profile() {
           <img className="w-20 h-20 rounded-full object-cover" src={userData?.photo} alt=""></img>
           <h1 className="text-2xl font-semibold">{userData?.username}</h1>
           <h2 className="text-neutral-400">{userData?.email}</h2>
-          <button className="absolute right-2 top-14 w-12 bg-blue-chill-500" onClick={handleEdit}>Edit</button>
+          <Link className="absolute right-2 top-14 w-12 text-center bg-blue-chill-500" href="/profile/edit">Edit</Link>
         </div>
         <div className="w-full h-2/3 flex flex-col p-1">
           <div className="w-full h-10 flex items-center space-x-2 p-1">
@@ -60,7 +55,7 @@ export default function Profile() {
             <h1 className="text-3xl font-bold">{userData?.username}</h1>
             <h2 className="pb-2">{userData?.email}</h2>
             <p className="text-sm text-wrap pb-4 text-neutral-400">{userData?.bio}</p>
-            <button className="w-14 bg-blue-chill-500" onClick={handleEdit}>Edit</button>
+            <Link className="w-14 text-center bg-blue-chill-500" href="/profile/edit">Edit</Link>
           </div>
         </div>
       </div>

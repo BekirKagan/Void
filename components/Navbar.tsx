@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { signOutUser, UserData } from "@/lib/actions/auth.actions"
+import { signOutUser, getUser, UserData } from "@/lib/actions/auth.actions"
 
 export default function Navbar() {
   const router = useRouter()
@@ -11,14 +11,22 @@ export default function Navbar() {
   const [userData, setUserData] = useState<UserData>()
 
   useEffect(() => {
-    const dataJSON = localStorage.getItem("userData")
-    if (!dataJSON) {
+    getUserData()
+  }, [])
+
+  async function getUserData() {
+    const userID = localStorage.getItem("userID")
+    if (!userID) {
       return router.push("/auth/sign-in")
     } else {
-      const data: UserData = JSON.parse(dataJSON)
-      setUserData(data)
+      const userData = await getUser(userID)
+      if (!userData) {
+        return router.push("/auth/sign-in")
+      } else {
+        setUserData(userData)
+      }
     }
-  }, [])
+  }
 
   async function handleSignOut() {
     await signOutUser()

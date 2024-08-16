@@ -4,7 +4,7 @@ import Link from "next/link"
 import { FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
-import { authenticateUser, UserData } from "@/lib/actions/auth.actions"
+import { authenticateUser } from "@/lib/actions/auth.actions"
 
 export default function SignIn() {
   const router = useRouter()
@@ -22,7 +22,7 @@ export default function SignIn() {
     const userData = await authenticateUser(email.toString(), password.toString())
     if (userData) {
       toast.success("Signed in successfully!")
-      localStorage.setItem("userData", JSON.stringify(userData))
+      localStorage.setItem("userID", userData.id)
       router.push("/")
     } else {
       toast.error("Something went wrong. Please try again later.")

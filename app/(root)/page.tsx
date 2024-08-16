@@ -1,6 +1,6 @@
 "use client"
 
-import { UserData } from "@/lib/actions/auth.actions"
+import { getUser, UserData } from "@/lib/actions/auth.actions"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
@@ -9,14 +9,22 @@ export default function Home() {
   const [userData, setUserData] = useState<UserData>()
 
   useEffect(() => {
-    const dataJSON = localStorage.getItem("userData")
-    if (dataJSON === null) {
+    getUserData()
+  }, [])
+
+  async function getUserData() {
+    const userID = localStorage.getItem("userID")
+    if (!userID) {
       return router.push("/auth/sign-in")
     } else {
-      const data: UserData = JSON.parse(dataJSON)
-      setUserData(data)
+      const userData = await getUser(userID)
+      if (!userData) {
+        return router.push("/auth/sign-in")
+      } else {
+        setUserData(userData)
+      }
     }
-  }, [])
+  }
 
   return (
     <>

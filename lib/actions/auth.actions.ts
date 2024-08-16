@@ -50,6 +50,21 @@ export async function authenticateUser(email: string, password: string): Promise
   }
 }
 
+export async function getUser(userID: string): Promise<UserData | null> {
+  try {
+    const snapshot = await getDoc(doc(firebaseDB, USERS_COLLECTION, userID))
+    if (snapshot.exists()) {
+      const userData: UserData = snapshot.data() as UserData
+      return userData
+    } else {
+      return null
+    }
+  } catch (error: any) {
+    logError(error)
+    return null
+  }
+}
+
 export async function updateUser(userData: UserData): Promise<boolean> {
   try {
     const reference: DocumentReference = doc(firebaseDB, USERS_COLLECTION, userData.id)
